@@ -1,6 +1,8 @@
 import React, {useState} from 'react'
 import {
+    Alert,
     SafeAreaView,
+    ScrollView,
     StyleSheet,
     Text,
     View
@@ -10,10 +12,11 @@ import {
     Button
 } from 'react-native-elements'
 import Header from '../../Header'
+import auth from '@react-native-firebase/auth';
 
 const Login = (props) => {
 
-    const [email, setemail] = useState('')
+    const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
 
     const validate = () => {
@@ -32,48 +35,67 @@ const Login = (props) => {
       }
 
     return(
-        <SafeAreaView style={styles.screenStyle}> 
-            <Header/>
-            <View style={styles.content}>
-                <Text style={styles.title}>Login</Text>
-            </View>
-            <View style={styles.inputStyle}>
-                <Input 
-                    label="Email"
-                    inputContainerStyle={styles.container}
-                    labelStyle={styles.labelStyle}
-                    containerStyle={styles.boxStyle}
-                    />
-
-                <Input 
-                    label="Senha"
-                    secureTextEntry={true}
-                    inputContainerStyle={styles.container}
-                    labelStyle={styles.labelStyle}
-                    containerStyle={styles.boxStyle}
-                    />
-            </View>
-            <View style={styles.buttonStyle}>
-                    <Button  
-                        title="Voltar"
-                        onPress={() => props.navigation.reset({
-                            index:1,
-                            routes:[{name:'home'}]
-                        }) } 
-                        type='outline'
-                        buttonStyle={styles.buttonRegister}
-                        titleStyle={styles.buttonText}
+        <ScrollView style={styles.screenStyle}>
+            <SafeAreaView> 
+                <Header/>
+                <View style={styles.content}>
+                    <Text style={styles.title}>Login</Text>
+                </View>
+                <View style={styles.inputStyle}>
+                    <Input 
+                        label="Email"
+                        inputContainerStyle={styles.container}
+                        labelStyle={styles.labelStyle}
+                        containerStyle={styles.boxStyle}
+                        onChangeText={(txt) => setEmail(txt)}
                         />
 
-                    <Button  
-                        title="Entrar"
-                        onPress={() => props.navigation.navigate('login') }  
-                        type='outline'
-                        buttonStyle={styles.buttonLogin}
-                        titleStyle={styles.buttonText}
+                    <Input 
+                        label="Senha"
+                        secureTextEntry={true}
+                        inputContainerStyle={styles.container}
+                        labelStyle={styles.labelStyle}
+                        containerStyle={styles.boxStyle}
+                        onChangeText={(txt) => setPassword(txt)}
                         />
                 </View>
-        </SafeAreaView>
+                <View style={styles.buttonStyle}>
+                        <Button  
+                            title="Voltar"
+                            onPress={() => props.navigation.reset({
+                                index:1,
+                                routes:[{name:'home'}]
+                            }) } 
+                            type='outline'
+                            buttonStyle={styles.buttonRegister}
+                            titleStyle={styles.buttonText}
+                            />
+
+                        <Button  
+                            title="Entrar" 
+                            type='outline'
+                            buttonStyle={styles.buttonLogin}
+                            titleStyle={styles.buttonText}
+                            onPress={() => auth().signInWithEmailAndPassword(email,password)
+                                    .then(() => props.navigation.navigate('listAll'))
+                                    .catch((error) => {
+                                        if (error.code === 'auth/user-not-found') {
+                                            Alert.alert('Usuário não encontrado!')
+                                        }
+
+                                        if (error.code === 'auth/invalid-email') {
+                                            Alert.alert('Email inválido!')
+                                        }
+
+                                        if(error.code === 'auth/invalid-password') {
+                                            Alert.alert('Senha inválida!')
+                                        }
+
+                                    })} 
+                            />
+                    </View>
+            </SafeAreaView>
+        </ScrollView>
     )
 }
 

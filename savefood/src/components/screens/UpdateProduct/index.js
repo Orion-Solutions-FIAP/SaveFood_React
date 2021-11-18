@@ -69,45 +69,53 @@ const UpdateProduct = (props) => {
                 <Header/>
 
                 <Input label='Nome' labelStyle={{color : '#FFF', paddingTop : 20}} onChangeText={(txt) => setNome(txt)} value={nome}
-                style={{backgroundColor : '#FFF', borderRadius : 10}}
+                style={{backgroundColor : '#FFF', borderRadius : 10}} inputStyle={{textAlign:'center'}}
                 />
 
-                <Text style={{paddingLeft : 11, fontWeight: 'bold', color : '#fff', fontSize : 16}} >Data de Vencimento</Text>
+                <View style={{flexDirection:'row', alignItems:'baseline', marginBottom: 16, width:'100%'}}>
 
-                <DatePicker 
-                style={{width : 200}}
-                mode="date"
-                format="DD-MM-YYYY" 
-                date={vencimento} 
-                onDateChange={(txt) => setVencimento(txt)}
-                confirmBtnText="Confirm"
-                cancelBtnText="Cancel"
-                minDate={new Date(Date.now())}
+                    <Input 
+                        keyboardType='numeric'
+                        label='Qtd' 
+                        labelStyle={{color : '#FFF'}} 
+                        onChangeText={(txt) => setQuantidade(txt)} 
+                        value={quantidade}
+                        containerStyle={{width:'30%'}}
+                        inputStyle={{textAlign:'center'}}
+                        style={{backgroundColor : '#FFF', borderRadius : 10}}
+                        
+                    />
 
-                customStyles={{
-                    dateIcon: {
-                    //display: 'none',
-                    left: 0,
-                    top: 1,
-                    marginLeft: 3,
-                    },
-                    dateInput: {
-                    backgroundColor : '#FFF',
-                    marginLeft: 10,
-                    borderRadius : 10, 
-                    },
-                }}
-                
-                />
+                    <View>
+                        <Text style={{fontWeight: 'bold', color : '#fff', fontSize : 16, marginBottom: 4}} >Vencimento</Text>
 
-                <Input 
-                    keyboardType='numeric'
-                    label='Quantidade' 
-                    labelStyle={{color : '#FFF', paddingTop : 20}} 
-                    onChangeText={(txt) => setQuantidade(txt)} 
-                    value={quantidade}
-                    style={{backgroundColor : '#FFF', borderRadius : 10}}
-                />
+                        <DatePicker 
+                        mode="date"
+                        format="DD-MM-YYYY" 
+                        date={vencimento} 
+                        onDateChange={(txt) => setVencimento(txt)}
+                        confirmBtnText="Confirm"
+                        cancelBtnText="Cancel"
+                        minDate={new Date(Date.now())}
+                        style={{width:'260%'}}
+
+
+                        customStyles={{
+                            dateIcon: {
+                            //display: 'none',
+                            left: 0,
+                            top: 1,
+                            marginLeft: 3,
+                            },
+                            dateInput: {
+                            backgroundColor : '#FFF',
+                            borderRadius : 10,
+                            height: '125%'
+                            },
+                        }}
+                        />
+                    </View>
+                </View>
 
 
 

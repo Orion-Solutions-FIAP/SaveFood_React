@@ -13,38 +13,15 @@ import {
 } from 'react-native-elements'
 import Header from '../../Header'
 import auth, { firebase } from '@react-native-firebase/auth';
-import firestore from '@react-native-firebase/firestore';
 
 const Login = (props) => {
 
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
 
-    const updateStatus = () => {
-        firestore()
-            .collection(auth().currentUser.uid)
-            .where('status','==', 'Disponivel')
-            .get()
-            .then(querySnapshot => {
-                querySnapshot.forEach((doc) => {
-                    var parts =doc.data().vencimento.split('-')
-                    var myDate = parts[2]+'-'+parts[1]+'-'+parts[0]
-                    if(new Date(myDate) < new Date(Date.now())){
-                        firestore().collection(auth().currentUser.uid).doc(doc.id).update({
-                            status : 'Vencido',
-                          })
-                    }
-                })
-            })
-            .catch((error) => {
-                console.log(error)
-            })
-    }
-
     const loginFirebase = () => {
         auth().signInWithEmailAndPassword(email,password)
         .then(() => {
-            updateStatus()
             props.navigation.navigate('listAll')
         })
         .catch((error) => {

@@ -27,9 +27,6 @@ const ListExpired = (props) => {
             .collection(auth().currentUser.uid)
             .doc(id)
             .delete()
-            .then(() => {
-                Alert.alert('Produto deletado')
-            })
             .catch((error) => {
                 Alert.alert('Não foi possível deletar o produto')
             })
@@ -103,6 +100,7 @@ const ListExpired = (props) => {
         />
 
             <SpeedDial
+            color='#EB705B'
             isOpen={open}
             icon={{ name: 'edit', color: '#fff' }}
             openIcon={{ name: 'close', color: '#fff' }}
@@ -110,17 +108,20 @@ const ListExpired = (props) => {
             onClose={() => setOpen(!open)}
             >
             <SpeedDial.Action
+                color='#EB705B'
                 icon={{ name: 'add', color: '#fff' }}
                 title="Cadastrar Produto"
                 onPress={() =>  props.navigation.navigate('productRegister')}
             />
             <SpeedDial.Action
+                color='#EB705B'
                 icon={{ name: 'list', color: '#fff' }}
                 title="Produtos Disponíveis"
                 onPress={() => props.navigation.navigate('listAll')}
             />
 
             <SpeedDial.Action
+                color='#EB705B'
                 icon={{ name: 'logout', color: '#fff' }}
                 title="Sair"
                 onPress={() => auth().signOut().then(() => props.navigation.navigate('home'))}

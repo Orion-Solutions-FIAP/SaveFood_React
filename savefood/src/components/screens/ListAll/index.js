@@ -29,6 +29,26 @@ const ListAll = (props) => {
           })
     }
 
+    const updateStatus = () => {
+        firestore()
+            .collection(auth().currentUser.uid)
+            .where('status','==', 'Disponivel')
+            .get()
+            .then(querySnapshot => {
+                querySnapshot.forEach((doc) => {
+                    if(new Date(doc.data().vencimento) < new Date(Date.now())){
+                        firestore().collection(auth().currentUser.uid).doc(doc.id).update({
+                            status : 'Vencido',
+                          })
+                    }
+                })
+                getProducts(auth().currentUser.uid)
+            })
+            .catch((error) => {
+                console.log(error)
+            })
+    }
+
     const getProducts = (id) => {
         setIsLoading(true)
         firestore()
@@ -51,7 +71,7 @@ const ListAll = (props) => {
     }
 
     useEffect(() => {
-        getProducts(auth().currentUser.uid)
+        updateStatus()
       }, []);
 
     return(
@@ -60,7 +80,7 @@ const ListAll = (props) => {
             data={products}
             refreshControl={
                 <RefreshControl
-                    onRefresh={() => getProducts(auth().currentUser.uid) }
+                    onRefresh={() => updateStatus() }
                     refreshing={ isLoading }
                 />}
             renderItem={({ item }) => (

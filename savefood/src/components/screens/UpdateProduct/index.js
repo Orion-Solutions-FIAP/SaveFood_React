@@ -56,7 +56,10 @@ const UpdateProduct = (props) => {
           status : 'Disponivel',
           quantidade : quantidade
         })
-        props.navigation.navigate('listAll');
+        props.navigation.reset({
+            index:0,
+            routes:[{name:'listAll'}]
+        }) 
       }
 
     return(

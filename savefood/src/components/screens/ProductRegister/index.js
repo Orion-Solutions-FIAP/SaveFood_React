@@ -116,7 +116,10 @@ const ProductRegister = (props) => {
 
                 <View style={{flex : 1, flexDirection : 'row', justifyContent : 'space-evenly', alignItems : 'center'}}>
                     <Button 
-                    onPress={()=>props.navigation.navigate('listAll')}
+                    onPress={() => props.navigation.reset({
+                        index:0,
+                        routes:[{name:'listAll'}]
+                    }) }
                     buttonStyle={{width: 110, height: 55, backgroundColor : '#393E41'}}
                     title='Voltar' 
                     />

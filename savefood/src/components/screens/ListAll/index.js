@@ -10,15 +10,14 @@ import {
     StyleSheet,
     View,
     FlatList,
-    Text,
-    Alert
+    RefreshControl
 } from 'react-native';
 
 const ListAll = (props) => {
 
     const [products, setProducts] = useState([])
     const [open, setOpen] = useState(false)
-
+    const [isLoading, setIsLoading] = useState(false)
 
     const deleteProduct = (id) => {
         firestore().collection(auth().currentUser.uid).doc(id).delete();
@@ -30,9 +29,10 @@ const ListAll = (props) => {
           })
     }
 
-    useEffect(() => {
+    const getProducts = (id) => {
+        setIsLoading(true)
         firestore()
-            .collection(auth().currentUser.uid)
+            .collection(id)
             .orderBy('vencimento','asc')
             .get()
             .then(querySnapshot => {
@@ -47,18 +47,31 @@ const ListAll = (props) => {
             .catch((error) => {
                 console.log(error)
             })
+            .finally(() => setIsLoading(false))
+    }
+
+    useEffect(() => {
+        getProducts(auth().currentUser.uid)
       }, []);
 
     return(
         <View style={{flex: 1, padding : 16}} >
         <FlatList
             data={products}
+            refreshControl={
+                <RefreshControl
+                    onRefresh={() => getProducts(auth().currentUser.uid) }
+                    refreshing={ isLoading }
+                />}
             renderItem={({ item }) => (
                 <View style={{paddingBottom : 10}} >
                     <ListItem.Swipeable
                         leftContent={
                             <Button
-                            onPress={ () => consumed(item.id)}
+                            onPress={ () => {
+                                consumed(item.id)
+                                getProducts(auth().currentUser.uid)
+                            }}
                             title="Consumido"
                             icon={{ name: 'check', color: 'white' }}
                             buttonStyle={{ minHeight: '100%', backgroundColor: 'lightgreen' }}
@@ -79,7 +92,10 @@ const ListAll = (props) => {
                             />
 
                             <Button
-                            onPress={ () => deleteProduct(item.id)}
+                            onPress={ () => {
+                                deleteProduct(item.id)
+                                getProducts(auth().currentUser.uid)
+                            }}
                             icon={{ name: 'delete', color: 'white' }}
                             buttonStyle={{ minHeight: '100%', backgroundColor: 'red', width: 65 }}
                             />
@@ -123,9 +139,12 @@ const ListAll = (props) => {
             />
             <SpeedDial.Action
                 color='#EB705B'
-                icon={{ name: 'delete', color: '#fff' }}
+                icon={{ name: 'list', color: '#fff' }}
                 title="Produtos Vencidos"
-                onPress={() => props.navigation.navigate('listExpired')}
+                onPress={() => props.navigation.reset({
+                    index:0,
+                    routes:[{name:'listExpired'}]
+                }) }
             />
 
             <SpeedDial.Action

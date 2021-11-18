@@ -8,7 +8,8 @@ import firestore from '@react-native-firebase/firestore';
 import { 
     View,
     FlatList,
-    Text
+    Text,
+    Alert
 } from 'react-native';
 
 const ListAll = (props) => {
@@ -17,13 +18,22 @@ const ListAll = (props) => {
     const [open, setOpen] = useState(false)
 
     useEffect(() => {
-        firestore().collection(auth().currentUser.uid).onSnapshot((query) => {
-          const list = [];
-          query.forEach((doc) => {
-            list.push({ ...doc.data(), id: doc.id });
-          });
-          setProducts(list);
-        });
+        firestore()
+            .collection(auth().currentUser.uid)
+            .orderBy('vencimento','asc')
+            .get()
+            .then(querySnapshot => {
+                const list = [];
+                querySnapshot.forEach((doc) => {
+                    if(doc.data().status == "Disponivel"){
+                        list.push({ ...doc.data(), id: doc.id });
+                    }
+                })
+                setProducts(list);
+            })
+            .catch((error) => {
+                console.log(error)
+            })
       }, []);
 
     return(

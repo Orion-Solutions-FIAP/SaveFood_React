@@ -7,6 +7,7 @@ import Login from './src/components/screens/Login'
 import Home from './src/components/screens/Home'
 import ListAll from './src/components/screens/ListAll'
 import UpdateProduct from './src/components/screens/UpdateProduct'
+import ListExpired from './src/components/screens/ListExpired'
 
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { NavigationContainer } from '@react-navigation/native'
@@ -23,7 +24,8 @@ const App = () => {
         <Stack.Screen name='userRegister' component={UserRegister} options={{title:'Cadastro de Usuário'}} />
         <Stack.Screen name="login" component={Login}/>
         <Stack.Screen name='productRegister' component={ProductRegister} options={{title:'Cadastro de Produto'}} />
-        <Stack.Screen name="listAll" component={ListAll} options={{title: 'Lista de Produtos',headerBackVisible: false}}/>
+        <Stack.Screen name="listAll" component={ListAll} options={{title: 'Produtos Disponíveis',headerBackVisible: false}}/>
+        <Stack.Screen name="listExpired" component={ListExpired} options={{title: 'Produtos Vencidos'}}/>
         <Stack.Screen name='updateProduct' component={UpdateProduct} options={{title:'Atualizar Produto'}} />
 
       </Stack.Navigator>

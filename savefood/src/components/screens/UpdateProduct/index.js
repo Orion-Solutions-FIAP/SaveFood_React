@@ -25,6 +25,9 @@ import firestore from '@react-native-firebase/firestore';
 LogBox.ignoreAllLogs()
 
 const UpdateProduct = (props) => {
+
+    let date = new Date();
+    let dateFormat = date.getFullYear()+"-"+((date.getMonth() + 1))+"-"+((date.getDate() + 1 ))
     
     const [nome, setNome] = useState(props.route.params.nome)
     const [vencimento, setVencimento] = useState(props.route.params.vencimento)
@@ -96,7 +99,7 @@ const UpdateProduct = (props) => {
                         onDateChange={(txt) => setVencimento(txt)}
                         confirmBtnText="Confirm"
                         cancelBtnText="Cancel"
-                        minDate={new Date(Date.now()).getDate()+1}
+                        minDate={dateFormat}
                         style={{width:'260%'}}
 
 

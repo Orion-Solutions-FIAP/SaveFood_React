@@ -14,7 +14,7 @@ import {
     Alert
 } from 'react-native';
 
-const ListAll = (props) => {
+const ListExpired = (props) => {
 
     const [products, setProducts] = useState([])
     const [open, setOpen] = useState(false)
@@ -27,12 +27,12 @@ const ListAll = (props) => {
     useEffect(() => {
         firestore()
             .collection(auth().currentUser.uid)
-            .orderBy('vencimento','asc')
+            .orderBy('vencimento','desc')
             .get()
             .then(querySnapshot => {
                 const list = [];
                 querySnapshot.forEach((doc) => {
-                    if(doc.data().status == "Disponivel"){
+                    if(doc.data().status == "Vencido"){
                         list.push({ ...doc.data(), id: doc.id });
                     }
                 })
@@ -50,27 +50,8 @@ const ListAll = (props) => {
             renderItem={({ item }) => (
                 <View style={{paddingBottom : 10}} >
                     <ListItem.Swipeable
-                        leftContent={
-                            <Button
-                            title="Consumido"
-                            icon={{ name: 'check', color: 'white' }}
-                            buttonStyle={{ minHeight: '100%', backgroundColor: 'lightgreen' }}
-                            />
-                        }
                         rightContent={
                             <View style={{display: 'flex', flexDirection: 'row'}} >
-                            <Button
-                            onPress={ () => props.navigation.navigate('updateProduct', {
-                                id : item.id,
-                                nome : item.nome,
-                                vencimento : item.vencimento,
-                                quantidade : item.quantidade
-                            })
-                        }
-                            icon={{ name: 'edit', color: 'white' }}
-                            buttonStyle={{ minHeight: '100%', backgroundColor: 'orange', width: 65 }}
-                            />
-
                             <Button
                             onPress={ () => deleteProduct(item.id)}
                             icon={{ name: 'delete', color: 'white' }}
@@ -79,9 +60,9 @@ const ListAll = (props) => {
                             </View>
                         }
                         >
-                        <ListItem.Content>
+                        <ListItem.Content >
                             <View style={{flex: 1}} >
-                            <View style={{flexDirection: 'row', justifyContent:'space-between'}}>
+                                <View style={{flexDirection: 'row', justifyContent:'space-between'}}>
                                     <ListItem.Title style={styles.itemStyle}>{item.nome}</ListItem.Title>
                                     <ListItem.Title style={styles.itemStyle}>{item.quantidade}</ListItem.Title>   
                                 </View>
@@ -112,8 +93,8 @@ const ListAll = (props) => {
             />
             <SpeedDial.Action
                 icon={{ name: 'delete', color: '#fff' }}
-                title="Produtos Vencidos"
-                onPress={() => props.navigation.navigate('listExpired')}
+                title="Produtos Disponíveis"
+                onPress={() => props.navigation.navigate('listAll')}
             />
 
             <SpeedDial.Action
@@ -141,11 +122,11 @@ const styles = StyleSheet.create({
     statusItemStyle:{
         fontFamily:'PatrickHand-Regular',
         fontSize:24,
-        color:"#56A75F", 
-        marginLeft:120
+        color:'red', 
+        marginLeft:128
     },
 
 
 })
 
-export default ListAll
+export default ListExpired

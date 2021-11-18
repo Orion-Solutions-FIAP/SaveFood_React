@@ -11,14 +11,15 @@ import {
     View,
     FlatList,
     Text,
-    Alert
+    Alert,
+    RefreshControl
 } from 'react-native';
 
 const ListAll = (props) => {
 
     const [products, setProducts] = useState([])
     const [open, setOpen] = useState(false)
-
+    const [isLoading, setIsLoading] = useState(false)
 
     const deleteProduct = (id) => {
         firestore().collection(auth().currentUser.uid).doc(id).delete();
@@ -30,9 +31,10 @@ const ListAll = (props) => {
           })
     }
 
-    useEffect(() => {
+    const getProducts = (id) => {
+        setIsLoading(true)
         firestore()
-            .collection(auth().currentUser.uid)
+            .collection(id)
             .orderBy('vencimento','asc')
             .get()
             .then(querySnapshot => {
@@ -47,12 +49,22 @@ const ListAll = (props) => {
             .catch((error) => {
                 console.log(error)
             })
+            .finally(() => setIsLoading(false))
+    }
+
+    useEffect(() => {
+        getProducts(auth().currentUser.uid)
       }, []);
 
     return(
         <View style={{flex: 1, padding : 16}} >
         <FlatList
             data={products}
+            refreshControl={
+                <RefreshControl
+                    onRefresh={() => getProducts(auth().currentUser.uid) }
+                    refreshing={ isLoading }
+                />}
             renderItem={({ item }) => (
                 <View style={{paddingBottom : 10}} >
                     <ListItem.Swipeable
@@ -123,7 +135,7 @@ const ListAll = (props) => {
             />
             <SpeedDial.Action
                 color='#EB705B'
-                icon={{ name: 'delete', color: '#fff' }}
+                icon={{ name: 'list', color: '#fff' }}
                 title="Produtos Vencidos"
                 onPress={() => props.navigation.navigate('listExpired')}
             />

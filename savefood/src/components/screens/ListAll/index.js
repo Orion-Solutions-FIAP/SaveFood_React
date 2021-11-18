@@ -24,6 +24,12 @@ const ListAll = (props) => {
         firestore().collection(auth().currentUser.uid).doc(id).delete();
     }
 
+    const consumed = (id) => {
+        firestore().collection(auth().currentUser.uid).doc(id).update({
+            status : 'Consumido',
+          })
+    }
+
     useEffect(() => {
         firestore()
             .collection(auth().currentUser.uid)
@@ -52,6 +58,7 @@ const ListAll = (props) => {
                     <ListItem.Swipeable
                         leftContent={
                             <Button
+                            onPress={ () => consumed(item.id)}
                             title="Consumido"
                             icon={{ name: 'check', color: 'white' }}
                             buttonStyle={{ minHeight: '100%', backgroundColor: 'lightgreen' }}
@@ -99,6 +106,8 @@ const ListAll = (props) => {
         />
 
             <SpeedDial
+            color='#EB705B'
+
             isOpen={open}
             icon={{ name: 'edit', color: '#fff' }}
             openIcon={{ name: 'close', color: '#fff' }}
@@ -106,17 +115,21 @@ const ListAll = (props) => {
             onClose={() => setOpen(!open)}
             >
             <SpeedDial.Action
+                color='#EB705B'
                 icon={{ name: 'add', color: '#fff' }}
                 title="Cadastrar Produto"
+
                 onPress={() =>  props.navigation.navigate('productRegister')}
             />
             <SpeedDial.Action
+                color='#EB705B'
                 icon={{ name: 'delete', color: '#fff' }}
                 title="Produtos Vencidos"
                 onPress={() => props.navigation.navigate('listExpired')}
             />
 
             <SpeedDial.Action
+                color='#EB705B'
                 icon={{ name: 'logout', color: '#fff' }}
                 title="Sair"
                 onPress={() => auth().signOut().then(() => props.navigation.navigate('home'))}

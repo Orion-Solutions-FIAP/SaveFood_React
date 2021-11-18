@@ -25,9 +25,12 @@ import firestore from '@react-native-firebase/firestore';
 LogBox.ignoreAllLogs()
 
 const ProductRegister = (props) => {
+
+    let date = new Date();
+    let dateFormat = ((date.getDate() + 1 )) + "-" + ((date.getMonth() + 1)) + "-" + date.getFullYear();
     
     const [nome, setNome] = useState('')
-    const [vencimento, setVencimento] = useState(new Date())
+    const [vencimento, setVencimento] = useState(dateFormat)
     const [quantidade, setQuantidade] = useState('')
 
     const validated = () => {
@@ -59,7 +62,7 @@ const ProductRegister = (props) => {
         }).then(() => {
             Alert.alert('Produto Cadastrado')
             setNome('')
-            setVencimento(new Date())
+            setVencimento(dateFormat)
             setQuantidade('')
             props.navigation.navigate('productRegister')
         }).catch((error) => {
@@ -101,7 +104,7 @@ const ProductRegister = (props) => {
                         onDateChange={(txt) => setVencimento(txt)}
                         confirmBtnText="Confirm"
                         cancelBtnText="Cancel"
-                        minDate={new Date(Date.now())}
+                        minDate={vencimento}
                         style={{width:'260%'}}
 
 

@@ -91,12 +91,12 @@ const UpdateProduct = (props) => {
 
                         <DatePicker 
                         mode="date"
-                        format="DD-MM-YYYY" 
+                        format="YYYY-MM-DD" 
                         date={vencimento} 
                         onDateChange={(txt) => setVencimento(txt)}
                         confirmBtnText="Confirm"
                         cancelBtnText="Cancel"
-                        minDate={new Date(Date.now())}
+                        minDate={new Date(Date.now()).getDate()+1}
                         style={{width:'260%'}}
 
 

@@ -2,6 +2,7 @@ import React, {useState} from 'react'
 
 import {
     Alert,
+    ScrollView,
     SafeAreaView,
     Text,
     View
@@ -60,59 +61,59 @@ const UserRegister = (props) => {
       }
 
     return(
-        <SafeAreaView style={{flex : 1, backgroundColor : '#EB705B', padding : 16}} >
+        <ScrollView style={{flex : 1, backgroundColor : '#EB705B', padding : 16}}>
+            <SafeAreaView >
 
-            <Header/>
+                <Header/>
 
-            <Input 
-                label='Nome' 
-                labelStyle={{color : '#FFF', paddingTop : 20}} 
-                onChangeText={(txt) => setNome(txt)} 
-                value={nome}
+                <Input 
+                    label='Nome' 
+                    labelStyle={{color : '#FFF', paddingTop : 20}} 
+                    onChangeText={(txt) => setNome(txt)} 
+                    value={nome}
+                    style={{backgroundColor : '#FFF', borderRadius : 10}}
+                />
+
+                <Input label='Email' 
+                labelStyle={{color : '#FFF'}}
+                onChangeText={(txt) => setEmail(txt)} value={email}
                 style={{backgroundColor : '#FFF', borderRadius : 10}}
-            />
+                />
 
-            <Input label='Email' 
-            labelStyle={{color : '#FFF'}}
-            onChangeText={(txt) => setEmail(txt)} value={email}
-            style={{backgroundColor : '#FFF', borderRadius : 10}}
-            />
+                <Input label='Senha' 
+                secureTextEntry
+                labelStyle={{color : '#FFF'}}
+                onChangeText={(txt) => setSenha(txt)} value={senha} 
+                style={{backgroundColor : '#FFF', borderRadius : 10}}
+                />
 
-            <Input label='Senha' 
-            secureTextEntry
-            labelStyle={{color : '#FFF'}}
-            onChangeText={(txt) => setSenha(txt)} value={senha} 
-            style={{backgroundColor : '#FFF', borderRadius : 10}}
-            />
-
-            <Input label='Confirmar Senha'
-            secureTextEntry
-            onChangeText={(txt) => setConfirmarSenha(txt)}
-            value={confirmarSenha}
-            labelStyle={{color : '#FFF'}}
-            style={{backgroundColor : '#FFF', borderRadius : 10}}
-            />
+                <Input label='Confirmar Senha'
+                secureTextEntry
+                onChangeText={(txt) => setConfirmarSenha(txt)}
+                value={confirmarSenha}
+                labelStyle={{color : '#FFF'}}
+                style={{backgroundColor : '#FFF', borderRadius : 10}}
+                />
 
 
-            <View style={{flex : 1, flexDirection : 'row', justifyContent : 'space-evenly', alignItems : 'center'}}>
-                <Button 
-                onPress={() => props.navigation.reset({
-                    index:1,
-                    routes:[{name:'home'}]
-                }) }
-                buttonStyle={{width: 110, height: 55, backgroundColor : '#393E41'}}
-                title='Voltar' />
-                
-                <Button 
-                onPress={() => {validate()}}
-                buttonStyle={{width: 110, height: 55, backgroundColor : '#B18FCF'}}
-                title='Salvar' />
-                
-            </View>
+                <View style={{flex : 1, flexDirection : 'row', justifyContent : 'space-evenly', alignItems : 'center'}}>
+                    <Button 
+                    onPress={() => props.navigation.reset({
+                        index:1,
+                        routes:[{name:'home'}]
+                    }) }
+                    buttonStyle={{width: 110, height: 55, backgroundColor : '#393E41'}}
+                    title='Voltar' />
+                    
+                    <Button 
+                    onPress={() => {validate()}}
+                    buttonStyle={{width: 110, height: 55, backgroundColor : '#B18FCF'}}
+                    title='Salvar' />
+                    
+                </View>
 
-            
-
-        </SafeAreaView>
+            </SafeAreaView>
+        </ScrollView>
     )
 }
 

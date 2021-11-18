@@ -2,6 +2,7 @@ import React, {useState, useEffect} from 'react'
 
 import {
     Alert,
+    ScrollView,
     SafeAreaView,
     Text,
     View,
@@ -23,83 +24,113 @@ import firestore from '@react-native-firebase/firestore';
 
 LogBox.ignoreAllLogs()
 
-const UserRegister = (props) => {
+const ProductRegister = (props) => {
     
     const [nome, setNome] = useState('')
     const [vencimento, setVencimento] = useState(new Date())
     const [quantidade, setQuantidade] = useState('')
 
+    const validated = () => {
+        if(nome.trim().length === 0){
+            Alert.alert('Nome é obrigatório')
+            return false
+        }
+        const quantityRegex = /^\d{1,2}$/
+        if(!quantityRegex.test(quantidade) || quantidade.trim().length === 0){
+            Alert.alert('A quantidade é obrigatória e só pode ter no máximo 2 números')
+            return false
+        }
+
+        return true
+
+    }
+
     const addProduto = () => {
+        if(!validated()){
+            return
+        }
         firestore().collection(auth().currentUser.uid).add({
           nome: nome,
           vencimento: vencimento,
           status : 'Disponivel',
           quantidade : quantidade
+        }).then(() => {
+            Alert.alert('Produto Cadastrado')
+            setNome('')
+            setVencimento(new Date())
+            setQuantidade('')
+            props.navigation.navigate('productRegister')
+        }).catch((error) => {
+            Alert.alert('Ocorreu um erro ao cadastrar')
         })
-        props.navigation.navigate('listAll');
       }
 
     return(
-        <SafeAreaView style={{flex : 1, backgroundColor : '#56A75F', padding : 16}} >
+        <ScrollView style={{flex : 1, backgroundColor : '#56A75F', padding : 16}}>
+            <SafeAreaView>
 
-            <Header/>
+                <Header/>
 
-            <Input label='Nome' labelStyle={{color : '#FFF', paddingTop : 20}} onChangeText={(txt) => setNome(txt)} value={nome}
-            style={{backgroundColor : '#FFF', borderRadius : 10}}
-            />
-
-            <Text style={{paddingLeft : 11, fontWeight: 'bold', color : '#fff', fontSize : 16}} >Data de Vencimento</Text>
-
-            <DatePicker 
-            style={{width : 200}}
-            mode="date"
-            format="DD-MM-YYYY" 
-            date={vencimento} 
-            onDateChange={(txt) => setVencimento(txt)}
-            confirmBtnText="Confirm"
-            cancelBtnText="Cancel"
-
-            customStyles={{
-                dateIcon: {
-                //display: 'none',
-                left: 0,
-                top: 1,
-                marginLeft: 3,
-                },
-                dateInput: {
-                backgroundColor : '#FFF',
-                marginLeft: 10,
-                borderRadius : 10, 
-                },
-            }}
-            
-            />
-
-            <Input 
-                keyboardType='numeric'
-                label='Quantidade' 
-                labelStyle={{color : '#FFF', paddingTop : 20}} 
-                onChangeText={(txt) => setQuantidade(txt)} 
-                value={quantidade}
+                <Input label='Nome' labelStyle={{color : '#FFF', paddingTop : 20}} onChangeText={(txt) => setNome(txt)} value={nome}
                 style={{backgroundColor : '#FFF', borderRadius : 10}}
-            />
+                />
 
+                <Text style={{paddingLeft : 11, fontWeight: 'bold', color : '#fff', fontSize : 16}} >Data de Vencimento</Text>
 
+                <DatePicker 
+                style={{width : 200}}
+                mode="date"
+                format="DD-MM-YYYY" 
+                date={vencimento} 
+                onDateChange={(txt) => setVencimento(txt)}
+                confirmBtnText="Confirm"
+                cancelBtnText="Cancel"
+                minDate={new Date(Date.now())}
 
-            <View style={{flex : 1, flexDirection : 'row', justifyContent : 'space-evenly', alignItems : 'center'}}>
-                <Button 
-                buttonStyle={{width: 110, height: 55, backgroundColor : '#393E41'}}
-                title='Voltar' />
+                customStyles={{
+                    dateIcon: {
+                    //display: 'none',
+                    left: 0,
+                    top: 1,
+                    marginLeft: 3,
+                    },
+                    dateInput: {
+                    backgroundColor : '#FFF',
+                    marginLeft: 10,
+                    borderRadius : 10, 
+                    },
+                }}
                 
-                <Button 
-                onPress={addProduto}
-                buttonStyle={{width: 110, height: 55, backgroundColor : '#E94F37'}}
-                title='Salvar' />
-                
-            </View>
+                />
 
-        </SafeAreaView>
+                <Input 
+                    keyboardType='numeric'
+                    label='Quantidade' 
+                    labelStyle={{color : '#FFF', paddingTop : 20}} 
+                    onChangeText={(txt) => setQuantidade(txt)} 
+                    value={quantidade}
+                    style={{backgroundColor : '#FFF', borderRadius : 10}}
+                />
+
+
+
+                <View style={{flex : 1, flexDirection : 'row', justifyContent : 'space-evenly', alignItems : 'center'}}>
+                    <Button 
+                    onPress={()=>props.navigation.navigate('listAll')}
+                    buttonStyle={{width: 110, height: 55, backgroundColor : '#393E41'}}
+                    title='Voltar' 
+                    />
+                    
+                    <Button 
+                    onPress={addProduto}
+                    buttonStyle={{width: 110, height: 55, backgroundColor : '#E94F37'}}
+                    title='Salvar' />
+                    
+                </View>
+
+            </SafeAreaView>
+        </ScrollView>
     )
 }
 
-export default UserRegister 
+export default ProductRegister 

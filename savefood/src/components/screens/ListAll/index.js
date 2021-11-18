@@ -7,6 +7,7 @@ import {
 import auth from '@react-native-firebase/auth'
 import firestore from '@react-native-firebase/firestore';
 import { 
+    StyleSheet,
     View,
     FlatList,
     Text,
@@ -80,8 +81,14 @@ const ListAll = (props) => {
                         >
                         <ListItem.Content>
                             <View style={{flex: 1}} >
-                                <ListItem.Title >{item.nome}</ListItem.Title>
-                                <ListItem.Title style={{color:'red'}}>Validade: {item.vencimento}</ListItem.Title>
+                            <View style={{flexDirection: 'row', justifyContent:'space-between'}}>
+                                    <ListItem.Title style={styles.itemStyle}>{item.nome}</ListItem.Title>
+                                    <ListItem.Title style={styles.itemStyle}>{item.quantidade}</ListItem.Title>   
+                                </View>
+                                <View style={{flexDirection: 'row', justifyContent:'space-between',alignItems:'center', marginTop: 32}}>
+                                    <ListItem.Title style={styles.dataItemStyle}>{item.vencimento}</ListItem.Title>
+                                    <ListItem.Title style={styles.statusItemStyle}>{item.status}</ListItem.Title>
+                                </View>
                             </View>
                         </ListItem.Content>
                         <ListItem.Chevron />
@@ -118,5 +125,27 @@ const ListAll = (props) => {
         </View>
     )
 }
+
+const styles = StyleSheet.create({
+    itemStyle:{
+        fontFamily:'PatrickHand-Regular',
+        fontSize:24
+        
+    },
+
+    dataItemStyle:{
+        fontFamily:'PatrickHand-Regular',
+        fontSize:20,
+    },
+
+    statusItemStyle:{
+        fontFamily:'PatrickHand-Regular',
+        fontSize:24,
+        color:"#56A75F", 
+        marginLeft:120
+    },
+
+
+})
 
 export default ListAll

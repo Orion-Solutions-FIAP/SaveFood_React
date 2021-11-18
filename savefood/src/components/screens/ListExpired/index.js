@@ -10,13 +10,16 @@ import {
     StyleSheet,
     View,
     FlatList,
-    Alert
+    Alert,
+    RefreshControl
+
 } from 'react-native';
 
 const ListExpired = (props) => {
 
     const [products, setProducts] = useState([])
     const [open, setOpen] = useState(false)
+    const [isLoading, setIsLoading] = useState(false)
 
 
     const deleteProduct = (id) => {
@@ -32,9 +35,10 @@ const ListExpired = (props) => {
             })
     }
 
-    useEffect(() => {
+    const getProducts = (id) => {
+        setIsLoading(true)
         firestore()
-            .collection(auth().currentUser.uid)
+            .collection(id)
             .orderBy('vencimento','desc')
             .get()
             .then(querySnapshot => {
@@ -49,18 +53,31 @@ const ListExpired = (props) => {
             .catch((error) => {
                 console.log(error)
             })
+            .finally(() => setIsLoading(false))
+    }
+
+    useEffect(() => {
+        getProducts(auth().currentUser.uid)
       }, []);
 
     return(
         <View style={{flex: 1, padding : 16}} >
         <FlatList
             data={products}
+            refreshControl={
+                <RefreshControl
+                    onRefresh={() => getProducts(auth().currentUser.uid) }
+                    refreshing={ isLoading }
+                />}
             renderItem={({ item }) => (
                 <View style={{paddingBottom : 10}} >
                     <ListItem.Swipeable
                         rightContent={
                             <Button
-                            onPress={ () => deleteProduct(item.id)}
+                            onPress={ () => {
+                                deleteProduct(item.id)
+                                getProducts(auth().currentUser.uid)
+                            }}
                             icon={{ name: 'delete', color: 'white' }}
                             buttonStyle={{ minHeight: '100%', backgroundColor: 'red'}}
                             />
@@ -98,7 +115,7 @@ const ListExpired = (props) => {
                 onPress={() =>  props.navigation.navigate('productRegister')}
             />
             <SpeedDial.Action
-                icon={{ name: 'delete', color: '#fff' }}
+                icon={{ name: 'list', color: '#fff' }}
                 title="Produtos Disponíveis"
                 onPress={() => props.navigation.navigate('listAll')}
             />

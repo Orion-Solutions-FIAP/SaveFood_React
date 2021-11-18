@@ -66,7 +66,10 @@ const ListExpired = (props) => {
                         rightContent={
                             <View style={{display: 'flex', flexDirection: 'row'}} >
                             <Button
-                            onPress={ () => deleteProduct(item.id)}
+                            onPress={ () => {
+                                deleteProduct(item.id)
+                                getProducts(auth().currentUser.uid)
+                            }}
                             icon={{ name: 'delete', color: 'white' }}
                             buttonStyle={{ minHeight: '100%', backgroundColor: 'red', width: 65 }}
                             />

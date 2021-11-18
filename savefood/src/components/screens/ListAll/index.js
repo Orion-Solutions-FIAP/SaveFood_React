@@ -10,8 +10,6 @@ import {
     StyleSheet,
     View,
     FlatList,
-    Text,
-    Alert,
     RefreshControl
 } from 'react-native';
 
@@ -70,7 +68,10 @@ const ListAll = (props) => {
                     <ListItem.Swipeable
                         leftContent={
                             <Button
-                            onPress={ () => consumed(item.id)}
+                            onPress={ () => {
+                                consumed(item.id)
+                                getProducts(auth().currentUser.uid)
+                            }}
                             title="Consumido"
                             icon={{ name: 'check', color: 'white' }}
                             buttonStyle={{ minHeight: '100%', backgroundColor: 'lightgreen' }}
@@ -91,7 +92,10 @@ const ListAll = (props) => {
                             />
 
                             <Button
-                            onPress={ () => deleteProduct(item.id)}
+                            onPress={ () => {
+                                deleteProduct(item.id)
+                                getProducts(auth().currentUser.uid)
+                            }}
                             icon={{ name: 'delete', color: 'white' }}
                             buttonStyle={{ minHeight: '100%', backgroundColor: 'red', width: 65 }}
                             />
@@ -137,7 +141,10 @@ const ListAll = (props) => {
                 color='#EB705B'
                 icon={{ name: 'list', color: '#fff' }}
                 title="Produtos Vencidos"
-                onPress={() => props.navigation.navigate('listExpired')}
+                onPress={() => props.navigation.reset({
+                    index:0,
+                    routes:[{name:'listExpired'}]
+                }) }
             />
 
             <SpeedDial.Action

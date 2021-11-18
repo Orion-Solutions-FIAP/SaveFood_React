@@ -18,6 +18,9 @@ import Header from '../../Header'
 
 import DatePicker from 'react-native-datepicker'
 
+import auth from '@react-native-firebase/auth'
+import firestore from '@react-native-firebase/firestore';
+
 LogBox.ignoreAllLogs()
 
 const UserRegister = (props) => {
@@ -25,6 +28,15 @@ const UserRegister = (props) => {
     const [nome, setNome] = useState('')
     const [vencimento, setVencimento] = useState(new Date())
     const [quantidade, setQuantidade] = useState('')
+
+    const addProduto = () => {
+        firestore().collection(auth().currentUser.uid).add({
+          nome: nome,
+          vencimento: vencimento,
+          status : 'Disponivel'
+        })
+        props.navigation.navigate("listAll");
+      }
 
     return(
         <SafeAreaView style={{flex : 1, backgroundColor : '#56A75F', padding : 16}} >
@@ -79,6 +91,7 @@ const UserRegister = (props) => {
                 title='Voltar' />
                 
                 <Button 
+                onPress={addProduto}
                 buttonStyle={{width: 110, height: 55, backgroundColor : '#E94F37'}}
                 title='Salvar' />
                 

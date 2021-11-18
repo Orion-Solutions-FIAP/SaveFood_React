@@ -10,9 +10,9 @@ import {
     StyleSheet,
     View,
     FlatList,
-    Text,
     Alert,
     RefreshControl
+
 } from 'react-native';
 
 const ListExpired = (props) => {
@@ -23,7 +23,16 @@ const ListExpired = (props) => {
 
 
     const deleteProduct = (id) => {
-        firestore().collection(auth().currentUser.uid).doc(id).delete();
+        firestore()
+            .collection(auth().currentUser.uid)
+            .doc(id)
+            .delete()
+            .then(() => {
+                Alert.alert('Produto deletado')
+            })
+            .catch((error) => {
+                Alert.alert('Não foi possível deletar o produto')
+            })
     }
 
     const getProducts = (id) => {
@@ -64,16 +73,14 @@ const ListExpired = (props) => {
                 <View style={{paddingBottom : 10}} >
                     <ListItem.Swipeable
                         rightContent={
-                            <View style={{display: 'flex', flexDirection: 'row'}} >
                             <Button
                             onPress={ () => {
                                 deleteProduct(item.id)
                                 getProducts(auth().currentUser.uid)
                             }}
                             icon={{ name: 'delete', color: 'white' }}
-                            buttonStyle={{ minHeight: '100%', backgroundColor: 'red', width: 65 }}
+                            buttonStyle={{ minHeight: '100%', backgroundColor: 'red'}}
                             />
-                            </View>
                         }
                         >
                         <ListItem.Content >

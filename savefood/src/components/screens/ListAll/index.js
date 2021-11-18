@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from 'react'
 import {
     Button,
-    SpeedDial
+    SpeedDial,
+    ListItem
 } from 'react-native-elements'
 import auth from '@react-native-firebase/auth'
 import firestore from '@react-native-firebase/firestore';
 import { 
     View,
     FlatList,
-    Text
+    Text,
+    Alert
 } from 'react-native';
 
 const ListAll = (props) => {
@@ -16,23 +18,70 @@ const ListAll = (props) => {
     const [products, setProducts] = useState([])
     const [open, setOpen] = useState(false)
 
-    useEffect(() => {
-        firestore().collection(auth().currentUser.uid).onSnapshot((query) => {
+    const deleteProduct = (id) => {
+        firestore().collection(auth().currentUser.uid).doc(id).delete();
+    }
+
+    const listarProdutos = (idUser) => {
+        firestore().collection(idUser)
+        .onSnapshot((query) => {
           const list = [];
           query.forEach((doc) => {
             list.push({ ...doc.data(), id: doc.id });
           });
           setProducts(list);
         });
+    }
+
+    useEffect(() => {
+        listarProdutos(auth().currentUser.uid)
       }, []);
 
     return(
-        <View style={{flex: 1}} >
+        <View style={{flex: 1, padding : 16}} >
         <FlatList
             data={products}
             renderItem={({ item }) => (
-                <View style={{ height: 50, flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-                <Text>Nome: {item.nome}</Text>
+                <View style={{paddingBottom : 10}} >
+                    <ListItem.Swipeable
+                        leftContent={
+                            <Button
+                            title="Consumido"
+                            icon={{ name: 'check', color: 'white' }}
+                            buttonStyle={{ minHeight: '100%', backgroundColor: 'lightgreen' }}
+                            />
+                        }
+                        rightContent={
+                            <View style={{display: 'flex', flexDirection: 'row'}} >
+                            <Button
+                            onPress={ () => props.navigation.navigate('updateProduct', {
+                                id : item.id,
+                                nome : item.nome,
+                                vencimento : item.vencimento,
+                                quantidade : item.quantidade
+                            })
+                        }
+                            icon={{ name: 'edit', color: 'white' }}
+                            buttonStyle={{ minHeight: '100%', backgroundColor: 'orange', width: 65 }}
+                            />
+
+                            <Button
+                            onPress={ () => deleteProduct(item.id)}
+                            icon={{ name: 'delete', color: 'white' }}
+                            buttonStyle={{ minHeight: '100%', backgroundColor: 'red', width: 65 }}
+                            />
+                            </View>
+                        }
+                        >
+                        <ListItem.Content>
+                            <View style={{flex: 1}} >
+                                <ListItem.Title >{item.nome}</ListItem.Title>
+                                <ListItem.Title style={{color:'red'}}>Validade: {item.vencimento}</ListItem.Title>
+                            </View>
+                        </ListItem.Content>
+                        <ListItem.Chevron />
+                    </ListItem.Swipeable>
+
                 </View>
             )}
         />
@@ -47,7 +96,7 @@ const ListAll = (props) => {
             <SpeedDial.Action
                 icon={{ name: 'add', color: '#fff' }}
                 title="Add"
-                onPress={() => props.navigation.navigate('productRegister')}
+                onPress={() =>  props.navigation.navigate('productRegister')}
             />
             <SpeedDial.Action
                 icon={{ name: 'delete', color: '#fff' }}

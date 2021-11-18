@@ -23,14 +23,15 @@ import firestore from '@react-native-firebase/firestore';
 
 LogBox.ignoreAllLogs()
 
-const UserRegister = (props) => {
+const UpdateProduct = (props) => {
     
-    const [nome, setNome] = useState('')
-    const [vencimento, setVencimento] = useState(new Date())
-    const [quantidade, setQuantidade] = useState('')
+    const [nome, setNome] = useState(props.route.params.nome)
+    const [vencimento, setVencimento] = useState(props.route.params.vencimento)
+    const [quantidade, setQuantidade] = useState(props.route.params.quantidade)
+    const [id, setId] = useState(props.route.params.id)
 
-    const addProduto = () => {
-        firestore().collection(auth().currentUser.uid).add({
+    const editarProduto = (nome, vencimento, quantidade, id) => {
+        firestore().collection(auth().currentUser.uid).doc(id).update({
           nome: nome,
           vencimento: vencimento,
           status : 'Disponivel',
@@ -92,7 +93,7 @@ const UserRegister = (props) => {
                 title='Voltar' />
                 
                 <Button 
-                onPress={addProduto}
+                onPress={() => editarProduto(nome, vencimento, quantidade, id)}
                 buttonStyle={{width: 110, height: 55, backgroundColor : '#E94F37'}}
                 title='Salvar' />
                 
@@ -102,4 +103,4 @@ const UserRegister = (props) => {
     )
 }
 
-export default UserRegister 
+export default UpdateProduct 

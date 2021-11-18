@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useEffect} from 'react'
 import {
     SafeAreaView,
     StyleSheet,
@@ -9,8 +9,18 @@ import {
     Button
 } from 'react-native-elements'
 import Header from '../../Header'
+import auth from '@react-native-firebase/auth';
 
 const Home = (props) => {
+
+    useEffect(() => {
+        auth().onAuthStateChanged(function(user){
+            if(user){
+                props.navigation.navigate('listAll')
+            }
+        })
+    }, [])
+
     return(
         <SafeAreaView style={styles.screenStyle}>
             <Header/>

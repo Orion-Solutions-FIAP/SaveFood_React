@@ -18,23 +18,28 @@ const ListAll = (props) => {
     const [products, setProducts] = useState([])
     const [open, setOpen] = useState(false)
 
+
     const deleteProduct = (id) => {
         firestore().collection(auth().currentUser.uid).doc(id).delete();
     }
 
-    const listarProdutos = (idUser) => {
-        firestore().collection(idUser)
-        .onSnapshot((query) => {
-          const list = [];
-          query.forEach((doc) => {
-            list.push({ ...doc.data(), id: doc.id });
-          });
-          setProducts(list);
-        });
-    }
-
     useEffect(() => {
-        listarProdutos(auth().currentUser.uid)
+        firestore()
+            .collection(auth().currentUser.uid)
+            .orderBy('vencimento','asc')
+            .get()
+            .then(querySnapshot => {
+                const list = [];
+                querySnapshot.forEach((doc) => {
+                    if(doc.data().status == "Disponivel"){
+                        list.push({ ...doc.data(), id: doc.id });
+                    }
+                })
+                setProducts(list);
+            })
+            .catch((error) => {
+                console.log(error)
+            })
       }, []);
 
     return(

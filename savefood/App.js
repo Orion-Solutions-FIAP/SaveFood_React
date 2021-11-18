@@ -23,8 +23,9 @@ const App = () => {
         <Stack.Screen name='userRegister' component={UserRegister} options={{title:'Cadastro de Usuário'}} />
         <Stack.Screen name="login" component={Login}/>
         <Stack.Screen name='productRegister' component={ProductRegister} options={{title:'Cadastro de Produto'}} />
-        <Stack.Screen name="listAll" component={ListAll}/>
+        <Stack.Screen name="listAll" component={ListAll} options={{title: 'Lista de Produtos',headerBackVisible: false}}/>
         <Stack.Screen name='updateProduct' component={UpdateProduct} options={{title:'Atualizar Produto'}} />
+
       </Stack.Navigator>
     </NavigationContainer>
   )

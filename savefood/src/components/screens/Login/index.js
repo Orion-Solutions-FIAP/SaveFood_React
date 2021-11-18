@@ -19,20 +19,26 @@ const Login = (props) => {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
 
-    const validate = () => {
+    const loginFirebase = () => {
+        auth().signInWithEmailAndPassword(email,password)
+        .then((userCredential) => {
+            let user = userCredential.user
+            props.navigation.navigate('listAll')
+        })
+        .catch((error) => {
+            if (error.code === 'auth/user-not-found') {
+                Alert.alert('Usuário não encontrado!')
+            }
 
-        if( email.trim().length === 0){
-            Alert.alert('Erro', 'Informe um Email!')
-            return false
-        }
-  
-        if( password.length === 0){
-            Alert.alert('Erro', 'Informe a senha!') 
-            return false
-        }
-  
-        return true
-      }
+            if (error.code === 'auth/invalid-email') {
+                Alert.alert('Email inválido!')
+            }
+
+            if(error.code === 'auth/invalid-password') {
+                Alert.alert('Senha inválida!')
+            }
+        })  
+    }
 
     return(
         <ScrollView style={styles.screenStyle}>
@@ -76,22 +82,7 @@ const Login = (props) => {
                             type='outline'
                             buttonStyle={styles.buttonLogin}
                             titleStyle={styles.buttonText}
-                            onPress={() => auth().signInWithEmailAndPassword(email,password)
-                                    .then(() => props.navigation.navigate('listAll'))
-                                    .catch((error) => {
-                                        if (error.code === 'auth/user-not-found') {
-                                            Alert.alert('Usuário não encontrado!')
-                                        }
-
-                                        if (error.code === 'auth/invalid-email') {
-                                            Alert.alert('Email inválido!')
-                                        }
-
-                                        if(error.code === 'auth/invalid-password') {
-                                            Alert.alert('Senha inválida!')
-                                        }
-
-                                    })} 
+                            onPress={() => loginFirebase()} 
                             />
                     </View>
             </SafeAreaView>
